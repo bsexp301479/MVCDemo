@@ -19,6 +19,7 @@ html {
 
 body {
   margin-bottom: 60px;
+  align-content:center;
 }
 
 #DetailTable, #DetailTable td {
