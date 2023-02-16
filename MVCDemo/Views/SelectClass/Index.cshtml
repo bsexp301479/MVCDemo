@@ -1,0 +1,130 @@
+﻿@model List<MVCDemo.Models.DBDataModel.Student>
+@{
+    ViewData["Title"] = "SelectClass";
+    var Class = ViewBag.Class;
+    var DetailData = ViewBag.DetailData;
+}
+<div class="text-center">
+    <form method="post" action="/Class/Create" id="ClassData">
+        <table>
+            <tr>
+                <td align="left">
+                    <span>學生 </span>
+                    <select id="SelectStudent">
+                        @foreach (var item in Model)
+                        {
+                            <option value="@item.StudentNum">@(item.StudentNum)(@item.Name)</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input type="button" onclick="SelectCreate()" class="btn btn-primary" value="新增">
+                </td>
+            </tr>
+            <tr>
+                <td align="left">
+                    @foreach (var ClassData in Class)
+                        {
+                            <input type="checkbox" name="SelectClass" value="@ClassData.ClassNum"><span>@ClassData.Name</span>
+                        }
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script>
+        function SelectCreate() {
+            var StudentNum = document.getElementById("SelectStudent").value;
+            var SelectClass = [];
+            $("input:checkbox[name=SelectClass]:checked").each(function () {
+                SelectClass.push($(this).val());
+            });
+
+            if (SelectClass.length == 0) {
+                alert("請選擇至少一個課程!");
+                return false;
+            }
+
+            const url = "/SelectClass/Create";
+            var JSONData = {
+                StudentNum: StudentNum,
+                ClassNum: SelectClass,
+            }
+            //console.log(PageSize, CurrentPage, ExecID, JSONData);
+            $.ajax({
+                type: "Post",
+                url: url,
+                ////更改contentType時後端取參數需要加入[FromBody]
+                //contentType: "application/json",
+                dataType: "json",
+                data: JSONData,
+                success: function (response) {
+                    if (response == 1) {
+                        window.location.href = "/SelectClass";//需要跳轉的地址
+                    }
+                    else {
+                        alert("資料異常!");
+                    }
+                },
+                error: function (thrownError) {
+                    console.log(thrownError);
+                }
+            });
+        }
+        function SelectDelete(StudentNum) {
+            const url = "/SelectClass/Delete";
+            var JSONData = {
+                StudentNum: StudentNum,
+            }
+            //console.log(PageSize, CurrentPage, ExecID, JSONData);
+            $.ajax({
+                type: "Post",
+                url: url,
+                ////更改contentType時後端取參數需要加入[FromBody]
+                //contentType: "application/json",
+                dataType: "json",
+                data: JSONData,
+                success: function (response) {
+                    if (response == 1) {
+                        alert("刪除成功!")
+                        window.location.href = "/SelectClass";//需要跳轉的地址
+                    }
+                    else {
+                        alert("資料異常!");
+                    }
+                    console.log("success");
+                },
+                error: function (thrownError) {
+                    console.log(thrownError);
+                }
+            });
+        }
+    </script>
+    <table id="DetailTable">
+        <tr>
+            <td>
+                學號
+            </td>
+            <td>
+                課程
+            </td>
+            <td>
+            </td>
+        </tr>
+        @foreach (var Detail in DetailData)
+        {
+                <tr>
+                    <td>
+                        @Detail.StudentNum
+                    </td>
+                    <td>
+                        @Detail.ClassName
+                    </td>
+                    <td>
+                        <input type="button" onclick="SelectDelete('@Detail.StudentNum')" value="刪除">
+                        <input type="button" onclick="location.href='@Url.Action("EditSelectClass", "SelectClass", new { StudentNum = Detail.StudentNum })'" value="編輯">
+                    </td>
+                </tr>
+        }
+    </table>
+</div>
+

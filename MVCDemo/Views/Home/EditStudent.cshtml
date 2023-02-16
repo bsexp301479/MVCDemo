@@ -1,0 +1,47 @@
+﻿@model MVCDemo.Models.DBDataModel.Student
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <form method="post" action="/Home/Update" id="StudentData">
+        <table>
+            <tr>
+                <td align="right">
+                    學號
+                    <input type="text" id="StudentNum" name="StudentNum" placeholder="StudentNum" readonly value="@Model.StudentNum">
+                    <span class="text-danger"></span>
+                </td>
+                <td>
+                    生日
+                    <input type="date" id="Birthday" name="Birthday" placeholder="Birthday" value="@Model.Birthday">
+                    <span class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    姓名
+                    <input type="text" id="Name" name="Name" placeholder="Name" value="@Model.Name">
+                    <span class="text-danger"></span>
+                </td>
+                <td>
+                    Email
+                    <input type="text" id="Email" name="Email" placeholder="Email" value="@Model.Email">
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    <span class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="Submit" class="btn btn-primary" value="修改">
+                    <input type="hidden" id="UniqueID" name="UniqueID" placeholder="UniqueID" value="@Model.UniqueID">
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script>
+    </script>
+    
+</div>
+

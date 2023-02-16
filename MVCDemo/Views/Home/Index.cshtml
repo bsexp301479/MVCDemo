@@ -1,0 +1,151 @@
+﻿@model List<MVCDemo.Models.DBDataModel.Student>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="text-center">
+    <form method="post" action="/Home/Create" id="StudentData">
+        <table>
+            <tr>
+                <td align="left">
+                    學號
+                    <input type="text" id="StudentNum" name="StudentNum" placeholder="StudentNum">
+                    <span class="text-danger"></span>
+                </td>
+                <td align="right">
+                    生日
+                    <input type="date" id="Birthday" name="Birthday" placeholder="Birthday">
+                    <span class="text-danger"></span>
+                </td>
+                <td rowspan="2">
+                    <input type="button" onclick="CheckIsDouble()" class="btn btn-primary" value="新增">
+                </td>
+            </tr>
+            <tr>
+                <td align="left">
+                    姓名
+                    <input type="text" id="Name" name="Name" placeholder="Name">
+                    <span class="text-danger"></span>
+                </td>
+                <td align="right">
+                    Email
+                    <input type="text" id="Email" name="Email" placeholder="Email">
+                    <span class="text-danger"></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script>
+        function CheckIsDouble() {
+            var StudentNum = document.getElementById("StudentNum").value
+            var Birthday = document.getElementById("Birthday").value
+            var Name = document.getElementById("Name").value
+            var Email = document.getElementById("Email").value
+            if (StudentNum == "" || Birthday == "" || Name == "" || Email == "") {
+                alert("請確認欄位資訊！");
+                return false
+            }
+            let regex = new RegExp(/^S[0-9]{4}$/)
+            if (!regex.test(StudentNum)) {
+                alert("學號格式不符！");
+                return false;
+            }
+            const url = "/home/CheckDouble";
+            var JSONData = {
+                StudentNum: StudentNum,
+                Birthday: Birthday,
+                Name: Name,
+                Email: Email,
+            }
+            //console.log(PageSize, CurrentPage, ExecID, JSONData);
+            $.ajax({
+                type: "Post",
+                url: url,
+                ////更改contentType時後端取參數需要加入[FromBody]
+                //contentType: "application/json",
+                dataType: "json",
+                data: JSONData,
+                success: function (response) {
+                    if (response == 1) {
+                        document.getElementById("StudentData").submit();//需要跳轉的地址
+                    }
+                    else {
+                        alert(response);
+                    }
+                    console.log("success");
+                },
+                error: function (thrownError) {
+                    console.log(thrownError);
+                }
+            });
+        }
+        function DeleteStu(StudentNum) {
+            const url = "/home/Delete";
+            var JSONData = {
+                StudentNum: StudentNum,
+            }
+            //console.log(PageSize, CurrentPage, ExecID, JSONData);
+            $.ajax({
+                type: "Post",
+                url: url,
+                ////更改contentType時後端取參數需要加入[FromBody]
+                //contentType: "application/json",
+                dataType: "json",
+                data: JSONData,
+                success: function (response) {
+                    if (response == 1) {
+                        alert("刪除成功!")
+                        window.location.href = "/";//需要跳轉的地址
+                    }
+                    else {
+                        alert("資料異常!");
+                    }
+                    console.log("success");
+                },
+                error: function (thrownError) {
+                    console.log(thrownError);
+                }
+            });
+        }
+    </script>
+    <table id="DetailTable">
+        <tr>
+            <td>
+                學號
+            </td>
+            <td>
+                姓名
+            </td>
+            <td>
+                生日
+            </td>
+            <td>
+                Email
+            </td>
+            <td>
+            </td>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <span>@item.StudentNum</span>
+                </td>
+                <td>
+                    <span>@item.Name</span>
+                </td>
+                <td>
+                    <span>@item.Birthday</span>
+                </td>
+                <td>
+                    <span>@item.Email</span>
+                </td>
+                <td>
+                    <input type="button" onclick="DeleteStu('@item.StudentNum')" value="刪除">
+                    <input type="button" value="編輯" onclick="location.href='@Url.Action("EditStudent", "Home", new { StudentNum = item.StudentNum })'">
+                </td>
+            </tr>
+
+        }
+    </table>
+</div>
+
