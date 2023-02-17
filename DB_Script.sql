@@ -1,3 +1,5 @@
+CREATE DATABASE TestProject
+
 CREATE TABLE [dbo].[Student] (
     [UniqueID]   INT           IDENTITY (1, 1) NOT NULL,
     [StudentNum] NVARCHAR (50) NULL,
