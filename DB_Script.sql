@@ -1,4 +1,4 @@
-CREATE DATABASE TestProject
+CREATE DATABASE TestProject;
 
 CREATE TABLE [dbo].[Student] (
     [UniqueID]   INT           IDENTITY (1, 1) NOT NULL,
